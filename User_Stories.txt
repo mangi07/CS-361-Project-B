@@ -1,0 +1,19 @@
+User Stories:
+
+Food Input: As a user, I want to be able to track the calories for the meal I eat. The less
+work it takes, the better.
+
+Goal Tracker: As a user, I want to be able to clearly establish my goals and see how well
+I’ve achieved them and get encouragement to hit those goals.
+
+Calorie Calculator: As a user, I want the calories to be automatically counted and
+weighed against my goals.
+
+Meal Planner: As a user, I want an interesting meal plan generated for me that fits my
+goals and dietary preferences. I want to be able to make changes if I don’t like the plan,
+or be able to regenerate a list at any time.
+
+Grocery List Generator: As a user, I want a grocery list generated from my meal plan.
+
+Healthy Articles: As a user, I want trustworthy health articles accessible to me to aid in
+the decisions I make relevant to my planned meals and goals.
