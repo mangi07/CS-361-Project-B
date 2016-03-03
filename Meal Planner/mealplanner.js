@@ -2,7 +2,10 @@
 var req = new XMLHttpRequest();
 
 var reqData = {};
-/*  Get reqData parts here */
+/**Get reqData parts here 
+ * Each data part is per INDIVIDUAL meal
+ * Import meal limits from (daily max calories/3 meals a day)
+ **/
 reqData['maxcalories'] = "1500";
 reqData['maxcarbs'] = "100";
 reqData['maxfat'] = "100";
@@ -11,8 +14,6 @@ reqData['mincalories'] = "0";
 reqData['minCarbs'] = "0";
 reqData['minfat'] = "0";
 reqData['minProtein'] = "0";
-
-
 
 //Build Query Here
 /* Documentation at:
@@ -27,28 +28,28 @@ for(var i = 0; i < reqDataKeys.length; i++){
     }
 }
 
-var user = "ben2016";
+
 /*
    Production Key: bOmaZvaeU8mshuqpe8f0WkZqUCGMp1mxhsnjsnDvVjriaCBS6D 
    Testing Key: DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1
 */
+var user = "ben2016";
 var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
-//reqQuery += "&X-Mashape-Key=" + key;
 
-var reqCount = 0;
-var failure = 0;
+
 //Open and send query
 req.open("GET", reqQuery , true);
 req.setRequestHeader("X-Mashape-Key", key);
-req.addEventListener('load', function()
-{
+
+var reqCount = 0;
+var failure = 0;
+req.addEventListener('load', function(){
     /**
      * Do something here with the req.responseText
      */
-     if (req.status >= 500)
-     {
+     if (req.status >= 500){
         //Ensure only 8 requests are made at most
-        if(++reqCount >= 8){
+        if(++reqCount >= 8) {
             failure = 1;
             console.log("Sorry, we couldn't get a recipe.\n");
             return;
@@ -56,7 +57,17 @@ req.addEventListener('load', function()
         req.open("GET", reqQuery , true);
         req.setRequestHeader("X-Mashape-Key", key);
         req.send();
+     } else {
+        var meals = JSON.parse(req.responseText);
+        var mealPlan = {};          //Holds Each Meal
+        var mealPlanCalories = 0;   //Total Calories
+        /* Build Meal Plan Here
+        for(var meal in meals){
+            if(mealPlanCalories + meals[meal] < dailyMaxCalories){
+                mealPlan[meal] = meals[meal];
+            }
+        }
+        */
      }
-     console.log(req.responseText);
 });
 req.send();
