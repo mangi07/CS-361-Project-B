@@ -1,0 +1,15 @@
+To test out this template that I created in Android Studio,
+unzip "latest.zip" and open it in Android Studio as an existing project.
+
+Also, you can set the minimum SDK as low as Android 2.3 (Gingerbread).
+
+I created this project with minimum SDK Android 2.3,
+and tested it on a real device running Android 2.3.6
+and in an emulator running Android 4.4.2
+
+I'm guessing that based on my testing, the project should demonstrate AJAX 
+working as shown in the "screenshots" folder.
+
+So with this, I believe we could keep on developing in HTML/CSS/JavaScript
+and put the files in assets/www of the Android app periodically to test it out.
+So the client gets the mobile app and yet we can keep writing in JavaScript:)

@@ -1,0 +1,12 @@
+For cycle one, I think we basically just need some way to persist user preferences.
+If we don't want any Internet connections beyond the API requests to spoonacular,
+I think SQLite3 in the Android app would be best.  That way, each user would have
+his/her own database on the Android device - no worries about managing user accounts,
+maybe just one table with a few columns to capture preferences.
+
+I've never done this before...but it seems that SQLite3 is a thing in Android development.
+
+Android project structure/building/running/emulation doesn't work here on c9.io
+as far as I know, but I can look into these issues,
+  SQLite3 and WebView,
+and upload files for you to review here.
