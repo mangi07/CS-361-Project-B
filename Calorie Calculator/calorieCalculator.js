@@ -18,34 +18,63 @@ function userInfo(gender, age, height, weight, activityFactor) {
     this.tdee;
 }
 
+document.addEventListener("DOMContentLoaded", bindSubmit);
+
+function bindSubmit(){
+    document.getElementById("submitButton").addEventListener("click", processInfo);
+}
+
+function processInfo(){
+    event.preventDefault();
+    var answer = calculateBMR();
+    answer = calculateTDEE(answer);
+    document.getElementById("bmrAnswer").textContent = answer;
+    window.location.href = "../Meal Planner/mealplanner.html?tdee=" + answer;
+    
+}
+
 // calculate the BMR of the user
-function calculateBMR (user) {
-    if (user.gender == "female") {
-        var bmr = 655 + (9.6 * user.weight) + (1.8 * user.height) - (4.7 * user.age);
-    } else if (user.gender == "male") {
-        var bmr = 66 + (13.7 * user.weight) + (5 * user.height) - (6.8 * user.age);
+function calculateBMR () {
+    var weight = document.getElementById("weightInput").value;
+    var height = getInches();
+    var age = document.getElementById("ageInput").value;
+    var gender = document.getElementById("gender").value;
+    var bmr;
+    if (gender == "Female") {
+        bmr = 655 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
+    } else if (gender == "Male") {
+        bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.76 * age);
     }
     return bmr;
 }
 
+function getInches(){
+    var feet = document.getElementById("heightFeetInput").value;
+    var inches = document.getElementById("heightInchesInput").value;
+    var heightInInches = parseInt((feet * 12)) + parseInt(inches);
+    return heightInInches;
+}
+
 // calculate the TDEE
-function calculateTDEE(user, bmr) {
+function calculateTDEE(bmr) {
     var tdee;
 
-    switch(user.activityFactor) {
-        case "Sedentary" :
+    console.log(document.getElementById("activityFactor").value);
+    
+    switch(parseInt(document.getElementById("activityFactor").value)) {
+        case 0:
             tdee = bmr * 1.2;
             break;
-        case "Light" :
+        case 25:
             tdee = bmr * 1.375;
             break;
-        case "Moderate" :
+        case 50:
             tdee = bmr * 1.55;
             break;
-        case "Very" :
+        case 75:
             tdee = bmr * 1.725;
             break;
-        case "Extreme" :
+        case 100:
             tdee = bmr * 1.9;
             break;
         default:
@@ -88,8 +117,10 @@ user.tdee = tdee;
 console.log("TDEE: ", user.tdee);
 
 // appending things to html
+/*
 var genderSelect = document.createElement("select");
 document.body.appendChild(genderSelect);
 
 fillSelectChoices(genderSelect, genderChoices);
+*/
 

@@ -3,8 +3,67 @@
     <head>
         <meta charset="UTF-8">
         <title>Calorie Calculator</title>
+        <link rel="stylesheet" type="text/CSS" href="../mainStyle.css">
     </head>
     <body>
+        
+        <span id="header">
+        <h2>
+            <center>
+                Calorie Counter
+            </center>
+        </h2>
+        </span>
+        
+        <center>
+        <div id="form">
+        <form action="mealPlanner.html" method="GET" id="userInfo">
+            <fieldset>
+                <legend>Gender</legend>
+                <select id="gender" name="gender">
+                    <option id="maleInput">Male</option>
+                    <option id="femaleInput">Female</option>
+                </select>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Age</legend>
+                <input type="number" name="age" id="ageInput">
+            </fieldset>
+            
+            <fieldset>
+                <legend>Height & Weight</legend>
+
+                <input type="number" name="heightFeet" id="heightFeetInput">
+                <label for="heightFeetInput">ft</label>
+                <input type="number" name="heightInches" id="heightInchesInput">
+                <label for="heightInchesInput">in</label>
+
+                <br><br>
+                
+                <input type="number" name="weight" id="weightInput">
+                <label for="weightInput">lbs</label>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Activity Factor</legend>
+                <div id="activityFactorWrapper">
+                    <label for="activityFactor">Sedentary</label>
+                    <input type="range" min=0 max=100 step=25 id="activityFactor">
+                    <label for="activityFactor">Extreme!</label>
+                </div>
+            </fieldset>
+            
+            <br>
+            <center>
+                <input type="submit" id="submitButton">
+            </center>
+        </form>
+        </div>
+        
+        <div>Answer:</div>
+        <div id="bmrAnswer"></div>
+        </center>
         <script src="calorieCalculator.js"></script>
     </body>
 </html>

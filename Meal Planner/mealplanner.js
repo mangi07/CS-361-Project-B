@@ -4,26 +4,35 @@ var req = new XMLHttpRequest();
 var reqData = {};
 /**Get reqData parts here 
  * Each data part is per INDIVIDUAL meal
- * Import meal limits from (daily max calories/3 meals a day)
+ * Import 
  **/
-reqData['maxcalories'] = "1500";
-reqData['maxcarbs'] = "100";
-reqData['maxfat'] = "100";
-reqData['maxprotein'] = "100";
-reqData['mincalories'] = "0";
-reqData['minCarbs'] = "0";
-reqData['minfat'] = "0";
-reqData['minProtein'] = "0";
+ 
+/** Function written by: Chris Ferdinandi 3/2/2015
+ *  Sourced From: http://gomakethings.com/how-to-get-the-value-of-a-querystring-with-native-javascript/
+ *
+ *  Use: Will parse a url for "get" queries. Pass 'field' that you want, 'url' is optional
+ **/
+var getQueryString = function ( field, url ) {
+    var href = url ? url : window.location.href;
+    var reg = new RegExp( '[?&]' + field + '=([^&#]*)', 'i' );
+    var string = reg.exec(href);
+    return string ? string[1] : null;
+};
+
+
+reqData['targetCalories'] = getQueryString('tdee');
+reqData['timeFrame'] = "week";
 
 //Build Query Here
 /* Documentation at:
      https://market.mashape.com/spoonacular/recipe-food-nutrition#find-by-nutrients */
 /* https://spoonacular-recipe-food-nutrition-v1.p.mashape.com */
-var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByNutrients?";
+
+var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/mealplans/generate?"
 var reqDataKeys = Object.keys(reqData);
 for(var i = 0; i < reqDataKeys.length; i++){
     reqQuery += reqDataKeys[i] + "=" + reqData[reqDataKeys[i]];
-    if(i != reqData.length -1 ){
+    if(i != reqData.length-1 ){
         reqQuery += "&";
     }
 }
@@ -59,8 +68,15 @@ req.addEventListener('load', function(){
         req.send();
      } else {
         var meals = JSON.parse(req.responseText);
-        var mealPlan = {};          //Holds Each Meal
-        var mealPlanCalories = 0;   //Total Calories
+        var content = document.getElementById("content");
+        
+        for(var i = 0; i < meals['items'].length; i++){
+            var curMeal = meals['items'][i];
+            var newDiv = document.createElement("div");
+            newDiv.id = "content";
+            newDiv.innerHTML = JSON.stringify(curMeal);
+            content.appendChild(newDiv);
+        }
         /* Build Meal Plan Here
         for(var meal in meals){
             if(mealPlanCalories + meals[meal] < dailyMaxCalories){

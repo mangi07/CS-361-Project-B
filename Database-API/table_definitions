@@ -1,0 +1,53 @@
+Here is a text version of the table definitions I've come up with;
+more will probably follow.
+
+CREATE TABLE ingredient
+(
+	id int AUTO_INCREMENT,
+	name varchar(255) NOT NULL,
+	unit float NOT NULL,
+	serving float NOT NULL,
+	calories float NOT NULL,
+	carbs float NOT NULL,
+	fat float NOT NULL,
+	protein float NOT NULL,
+	CONSTRAINT name_unique UNIQUE (name),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE recipe
+(
+	id int AUTO_INCREMENT,
+	name varchar(255) NOT NULL,
+	CONSTRAINT name_unique UNIQUE (name),
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE recipe_ingredient
+(
+	ingredient_id int NOT NULL,
+	recipe_id int NOT NULL,
+	qty float NOT NULL,
+	CONSTRAINT recipe_ingredient_1 FOREIGN KEY (ingredient_id) REFERENCES ingredient (id),
+	CONSTRAINT recipe_ingredient_2 FOREIGN KEY (recipe_id) REFERENCES recipe (id),
+	CONSTRAINT recipe_ingredient_unique UNIQUE (ingredient_id, recipe_id),
+	PRIMARY KEY(ingredient_id, recipe_id)
+);
+
+CREATE TABLE meal
+(
+	id int AUTO_INCREMENT,
+	eat_date date NOT NULL,
+	eat_time time NOT NULL,
+	PRIMARY KEY(id)
+);
+
+CREATE TABLE meal_recipe
+(
+	meal_id int NOT NULL,
+	recipe_id int NOT NULL,
+	serving float NOT NULL,
+	CONSTRAINT meal_recipe_1 FOREIGN KEY (meal_id) REFERENCES meal (id),
+	CONSTRAINT meal_recipe_2 FOREIGN KEY (recipe_id) REFERENCES recipe (id),
+	PRIMARY KEY(meal_id, recipe_id)
+);
