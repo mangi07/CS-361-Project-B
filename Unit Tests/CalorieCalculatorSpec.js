@@ -2,7 +2,7 @@ describe("User", function() {
   var user;
 
   beforeEach(function() {
-    user = new userInfo("female", 26, 165.1, 65.7709, "Very");
+    user = new userInfo("female", 26, 165.1, 65.7709, "75");
   });
 
   it("should be able to change fields", function() {
@@ -10,21 +10,21 @@ describe("User", function() {
 		user.age = 30;
 		user.height = 170.1;
 		user.weight = 72;
-		user.activityFactor = "Moderate";
+		user.activityFactor = "50";
 		
     expect(user.gender).toEqual("male");
 		expect(user.age).toEqual(30);
 		expect(user.height).toEqual(170.1);
 		expect(user.weight).toEqual(72);
-		expect(user.activityFactor).toEqual("Moderate");
+		expect(user.activityFactor).toEqual("50");
 
   });
 	
-	it("should have a BRM of ~1461.38 as female, 26 yrs, 165.1 cm, 65.7709 kg, and Very active lifestyle", function() {
+	it("should have a BRM of ~1594.87 as female, 26 yrs, 165.1 cm, 65.7709 lbs, and Very active (75) lifestyle", function() {
     var bmr = calculateBMR(user);
 		
-		expect(bmr).toBeGreaterThan(1461.38);
-		expect(bmr).toBeLessThan(1461.38);
+		expect(bmr).toBeGreaterThan(1594.87);
+		expect(bmr).toBeLessThan(1594.88);
 
   });
 /*

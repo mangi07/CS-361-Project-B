@@ -18,32 +18,52 @@ function userInfo(gender, age, height, weight, activityFactor) {
     this.tdee;
 }
 
+// function to capture user info from the DOM and put it into a user info object
+function captureUserInfo(){
+    var weight = document.getElementById("weightInput").value;
+    var height = getInches();
+    var age = document.getElementById("ageInput").value;
+    var gender = document.getElementById("gender").value;
+    var activityFactor = document.getElementById("activityFactor").value;
+    var userObject = userInfo(gender, age, height, weight, activityFactor);
+    return userObject;
+}
+
 document.addEventListener("DOMContentLoaded", bindSubmit);
 
 function bindSubmit(){
     document.getElementById("submitButton").addEventListener("click", processInfo);
 }
 
-function processInfo(){
+function uiExtract(){
     event.preventDefault();
-    var answer = calculateBMR();
-    answer = calculateTDEE(answer);
-    document.getElementById("bmrAnswer").textContent = answer;
+    var user = captureUserInfo();
+    var answer = processInfo(user); //testable portion
+    document.getElementById("bmrAnswer").textContent = user.tdee;
     window.location.href = "../Meal Planner/mealplanner.html?tdee=" + answer;
-    
+}
+
+function processInfo(userInfo){
+    var answer = calculateBMR(userInfo);
+    userInfo.bmr = answer;
+    answer = calculateTDEE(userInfo);
+    userInfo.tdee = answer;
+    return userInfo;
 }
 
 // calculate the BMR of the user
-function calculateBMR () {
-    var weight = document.getElementById("weightInput").value;
-    var height = getInches();
-    var age = document.getElementById("ageInput").value;
-    var gender = document.getElementById("gender").value;
+function calculateBMR (userObject) {
+    //var weight = document.getElementById("weightInput").value;
+    //var height = getInches();
+    //var age = document.getElementById("ageInput").value;
+    //var gender = document.getElementById("gender").value;
     var bmr;
-    if (gender == "Female") {
-        bmr = 655 + (4.35 * weight) + (4.7 * height) - (4.7 * age);
-    } else if (gender == "Male") {
-        bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.76 * age);
+    if (userObject.gender == "female") {
+        bmr = 655 + (4.35 * userObject.weight) + (4.7 * userObject.height) 
+        - (4.7 * userObject.age);
+    } else if (userObject.gender == "male") {
+        bmr = 66 + (6.23 * userObject.weight) + (12.7 * userObject.height) 
+        - (6.76 * userObject.age);
     }
     return bmr;
 }
@@ -56,26 +76,28 @@ function getInches(){
 }
 
 // calculate the TDEE
-function calculateTDEE(bmr) {
+function calculateTDEE(userInfo) {
     var tdee;
 
-    console.log(document.getElementById("activityFactor").value);
+    //console.log(document.getElementById("activityFactor").value);
     
-    switch(parseInt(document.getElementById("activityFactor").value)) {
+    //switch(parseInt(document.getElementById("activityFactor").value)) {
+    //redone for more test-o-rific style:
+    switch(parseInt(userInfo.activityFactor)) {
         case 0:
-            tdee = bmr * 1.2;
+            tdee = userInfo.bmr * 1.2;
             break;
         case 25:
-            tdee = bmr * 1.375;
+            tdee = userInfo.bmr * 1.375;
             break;
         case 50:
-            tdee = bmr * 1.55;
+            tdee = userInfo.bmr * 1.55;
             break;
         case 75:
-            tdee = bmr * 1.725;
+            tdee = userInfo.bmr * 1.725;
             break;
         case 100:
-            tdee = bmr * 1.9;
+            tdee = userInfo.bmr * 1.9;
             break;
         default:
             tdee = 0;
@@ -104,17 +126,27 @@ var activityChoices = ["Sedentary", "Light", "Moderate", "Very", "Extreme"];
 // vegan, paleo ?
 
 // testing calculator and stuff
-var user = new userInfo("female", 26, 165.1, 65.7709, "Very");
+var testUser = new userInfo("female", 26, 165.1, 65.7709, "75");
 
-var bmr = calculateBMR(user);
-user.bmr = bmr;
+testUser = processInfo(testUser);
 
-console.log("BMR: ", user.bmr);
+console.log("Gender", testUser.gender);
+console.log("Age", testUser.age);
+console.log("Height in inches", testUser.height);
+console.log("Weight in lbs", testUser.weight);
+console.log("Activity factor (numerical)", testUser.activityFactor)
+console.log("BMR", testUser.bmr);
+console.log("TDEE", testUser.tdee);
 
-var tdee = calculateTDEE(user, user.bmr);
-user.tdee = tdee;
+//var testBMR = calculateBMR(testUser);
+//testUser.bmr = testBMR;
 
-console.log("TDEE: ", user.tdee);
+//console.log("BMR: ", testUser.bmr);
+
+//var testTdee = calculateTDEE(testUser);
+//testUser.tdee = testTdee;
+
+//console.log("TDEE: ", testUser.tdee);
 
 // appending things to html
 /*

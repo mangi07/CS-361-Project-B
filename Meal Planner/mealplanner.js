@@ -20,7 +20,8 @@ var getQueryString = function ( field, url ) {
 };
 
 
-reqData['targetCalories'] = getQueryString('tdee');
+// reqData['targetCalories'] = getQueryString('tdee');
+reqData['targetCalories'] = 2000;
 reqData['timeFrame'] = "week";
 
 //Build Query Here
