@@ -32,6 +32,7 @@ function captureUserInfo(){
 document.addEventListener("DOMContentLoaded", bindSubmit);
 
 function bindSubmit(){
+    // Ben: I think we need to bind to uiExtract now, instead of processInfo:
     document.getElementById("submitButton").addEventListener("click", processInfo);
 }
 

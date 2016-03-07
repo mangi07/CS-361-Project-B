@@ -27,6 +27,14 @@ describe("User", function() {
 		expect(bmr).toBeLessThan(1594.88);
 
   });
+  
+  // Ben: tests for calculateTDEE needed
+  
+  // Ben: tests for mealplanner.js needed in separate file
+  //   as described here: https://piazza.com/class/iir5jzwlu5d3ph?cid=378
+  //   and add link to SpecRunner.html
+  
+  
 /*
   describe("when song has been paused", function() {
     beforeEach(function() {
@@ -68,4 +76,8 @@ describe("User", function() {
       }).toThrowError("song is already playing");
     });
   });     */
+  
+  
+  
+  
 });

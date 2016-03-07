@@ -1,4 +1,6 @@
 
+// Ben: need to bind ajax response to Java function that persists meal plans
+//  and add ui capability somewhere to load meal plans through a second Java function
 var req = new XMLHttpRequest();
 
 var reqData = {};
@@ -19,7 +21,8 @@ var getQueryString = function ( field, url ) {
     return string ? string[1] : null;
 };
 
-
+// Ben: swap comments on reqData['targetCalories'] assignment 
+//   to deal with GET request from calorieCalculator.js
 // reqData['targetCalories'] = getQueryString('tdee');
 reqData['targetCalories'] = 2000;
 reqData['timeFrame'] = "week";
@@ -71,6 +74,7 @@ req.addEventListener('load', function(){
         var meals = JSON.parse(req.responseText);
         var content = document.getElementById("content");
         
+        // Ben: for JQuery mobile css, some edits needed here
         for(var i = 0; i < meals['items'].length; i++){
             var curMeal = meals['items'][i];
             var newDiv = document.createElement("div");
