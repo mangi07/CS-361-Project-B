@@ -8,6 +8,21 @@ var reqData = {};
  * Each data part is per INDIVIDUAL meal
  * Import 
  **/
+
+/* This JSON object will ultimately contain all the information for each recipe
+returned by the initial recipes/mealplans/generate call. These will be appended
+to finalRecipes[i]. Successive calls to different portions of the Spoonacular API
+will add information as follows:
+1. GET Compute Daily Meal Plan <recipes/mealplans/generate>
+   obtains - id, title, imageType, imageUrls
+2. GET Recipe Information <recipes/{id}/information> 
+   obtains - sourceUrl (of outside website)
+3. GET Extract Recipe From Website <recipes/extract> 
+   obtains - servings, extendedIngredients, readyInMinutes, text, instructions
+Once all these things have been appended, we have a finalized recipe object
+that will be references as finalRecipes[i].
+*/
+var finalRecipes = [];
  
 /** Function written by: Chris Ferdinandi 3/2/2015
  *  Sourced From: http://gomakethings.com/how-to-get-the-value-of-a-querystring-with-native-javascript/
@@ -54,9 +69,10 @@ var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
 req.open("GET", reqQuery , true);
 req.setRequestHeader("X-Mashape-Key", key);
 
-var reqCount = 0;
-var failure = 0;
+
 req.addEventListener('load', function(){
+    var reqCount = 0;
+    var failure = 0;
     /**
      * Do something here with the req.responseText
      */
@@ -71,17 +87,41 @@ req.addEventListener('load', function(){
         req.setRequestHeader("X-Mashape-Key", key);
         req.send();
      } else {
+/* Call to set up a list of recipes for the week given a daily calorie count
+{
+  "meals": [
+    {
+      "id": 484839,
+      "title": "Chocolate Peanut Butter Banana Breakfast Shake",
+      "readyInMinutes": 5,
+      "image": "Chocolate-Peanut-Butter-Banana-Breakfast-Shake-484839.jpg",
+      "imageUrls": [
+        "Chocolate-Peanut-Butter-Banana-Breakfast-Shake-484839.jpg"
+      ]
+    },
+*/
         var meals = JSON.parse(req.responseText);
         var content = document.getElementById("content");
         
         // Ben: for JQuery mobile css, some edits needed here
+        // 1. GET Compute Daily Meal Plan <recipes/mealplans/generate>
+        // obtains - id, title, imageType, imageUrls
         for(var i = 0; i < meals['items'].length; i++){
             var curMeal = meals['items'][i];
+            finalRecipes.push(JSON.parse(curMeal.value));
             var newDiv = document.createElement("div");
             newDiv.id = "content";
             newDiv.innerHTML = JSON.stringify(curMeal);
             content.appendChild(newDiv);
         }
+        // GET MEAL ID HERE
+        // 2. addNutrientsToFinalRecipes and return recipe url
+        // websiteUrl = getNutrientsReturnRecipeUrl(mealId, finalRecipes); // ajax call
+        // 3. addRecipeInstructionsAndAnythingElse
+        // extractRecipe(recipeWebsiteUrl); // ajax call
+        // finalRecipes[i].push(remainingData);
+        /* Java persist finalRecipes */
+        
         /* Build Meal Plan Here
         for(var meal in meals){
             if(mealPlanCalories + meals[meal] < dailyMaxCalories){
@@ -92,3 +132,73 @@ req.addEventListener('load', function(){
      }
 });
 req.send();
+
+/* Call to request a recipe by nutrient content */
+/* Request should return JSON as in this example:
+           [
+              {
+                "id": 68608,
+                "title": "Chocolate-Cannoli Roll",
+                "image": "https://spoonacular.com/recipeImages/chocolate-cannoli_roll-68608.jpg",
+                "imageType": "jpg",
+                "calories": 280,
+                "protein": "8g",
+                "fat": "13g",
+                "carbs": "35g"
+              },
+              ...etc
+        */
+/* TWEAK THIS FUNCTION */
+// 2. GET Recipe Information <recipes/{id}/information> 
+//    obtains - sourceUrl (of outside website)
+// DATA Get Product Information
+// make sure this returns sourceUrl
+function getNutrientsReturnRecipeUrl(mealId, finalRecipes){
+    //var reqCount = 0;
+    //var failure = 0;
+    /**
+     * Do something here with the req.responseText
+     */
+//     if (req.status >= 500){
+//        //Ensure only 8 requests are made at most
+//        if(++reqCount >= 8) {
+//            failure = 1;
+//            console.log("getRecipeUrlFromID: Unable to get recipe url from meal id.\n");
+//            return;
+//        }
+//        req.open("GET", reqQuery , true);
+//        req.setRequestHeader("X-Mashape-Key", key);
+//        req.send();
+//     } else {
+        /* Request should return JSON as in this example:
+           [
+              {
+                "id": 68608,
+                "title": "Chocolate-Cannoli Roll",
+                "image": "https://spoonacular.com/recipeImages/chocolate-cannoli_roll-68608.jpg",
+                "imageType": "jpg",
+                "calories": 280,
+                "protein": "8g",
+                "fat": "13g",
+                "carbs": "35g"
+              },
+              ...etc
+        */
+//        var meals = JSON.parse(req.responseText);
+//        var content = document.getElementById("content");
+        
+        // Ben: for JQuery mobile css, some edits needed here
+//        for(var i = 0; i < meals['items'].length; i++){
+//            var curMeal = meals['items'][i];
+//            finalRecipes.push(JSON.parse(curMeal.value));
+//            var newDiv = document.createElement("div");
+//            newDiv.id = "content";
+//            newDiv.innerHTML = JSON.stringify(curMeal);
+//            content.appendChild(newDiv);
+}
+
+
+/* IMPLEMENT AND DOCUMENT */
+// 3. GET Extract Recipe From Website <recipes/extract> 
+//    obtains - servings, extendedIngredients, readyInMinutes, text, instructions
+function extractRecipe(recipeWebsiteUrl){}
