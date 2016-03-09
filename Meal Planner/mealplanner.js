@@ -15,7 +15,7 @@ will add information as follows:
 3. GET Extract Recipe From Website <recipes/extract> 
    obtains - text, instructions
 Once all these things have been appended, we have a finalized recipeObject
-that will be references as finalRecipes[i].
+that will be referenced as finalRecipes[i].
 */
 var finalRecipes = [];
 /* All the data needed for a single recipe will be gathered into this object:
@@ -56,15 +56,14 @@ function getWeeklyMeals() {
     // Ben: swap comments on reqData['targetCalories'] assignment 
     //   to deal with GET request from calorieCalculator.js
     
-    // reqData['targetCalories'] = getQueryString('tdee');
-    //reqData['targetCalories'] = 2000;
-    //reqData['timeFrame'] = "week";
+    //reqData['targetCalories'] = getQueryString('tdee');
+    reqData['targetCalories'] = 2000;
+    reqData['timeFrame'] = "week";
     
     var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/mealplans/generate?"
     //var reqDataKeys = Object.keys(reqData);
-    reqQuery += "targetCalories=" + 2000;
-    //reqQuery += "targetCalories=" + getQueryString('tdee');
-    reqQuery += "&timeFrame=week";
+    reqQuery += "targetCalories=" + reqData['targetCalories'];
+    reqQuery += "&timeFrame=" + reqData['timeFrame'];
     
     /*
     for(var i = 0; i < reqDataKeys.length; i++){
@@ -79,43 +78,49 @@ function getWeeklyMeals() {
     req.open("GET", reqQuery , true);
     req.setRequestHeader("X-Mashape-Key", key);
     req.addEventListener('load', function(){
-        var reqCount = 0;
-        var failure = 0;
-        /**
-         * Do something here with the req.responseText
-         */
-         if (req.status >= 500){
-            //Ensure only 8 requests are made at most
-            if(++reqCount >= 8) {
-                failure = 1;
-                console.log("Sorry, we couldn't get a recipe.\n");
-                return;
-            }
-            req.open("GET", reqQuery , true);
-            req.setRequestHeader("X-Mashape-Key", key);
-            req.send();
-         } else {
-            var meals = JSON.parse(req.responseText);
-            var content = document.getElementById("content");
-            
-            // 1. GET Compute Daily Meal Plan <recipes/mealplans/generate>
-            // obtains - id, title, imageType, imageUrls
-            for(var i = 0; i < meals['items'].length; i++){
-                var curMeal = meals['items'][i];
-                curMeal = JSON.parse(curMeal.value);
-                recipeObject.id = curMeal.id;
-                recipeObject.title = curMeal.title;
-                finalRecipes.push(recipeObject);
-            }
-         }
+        getWeeklyMealsRequestCallback(req, reqQuery);
     });
     req.send();
 
 }
 
+function getWeeklyMealsRequestCallback(req, reqQuery){
+    var reqCount = 0;
+    
+    if (req.status >= 500)
+    {
+        //Ensure only 8 requests are made at most
+        if(++reqCount >= 8)
+        {
+            console.log("Sorry, we couldn't get a meal plan.\n");
+            return;
+        }
+        req.open("GET", reqQuery , true);
+        req.setRequestHeader("X-Mashape-Key", key);
+        req.send();
+    } else {
+        var meals = JSON.parse(req.responseText);
+
+        // 1. GET Compute Daily Meal Plan <recipes/mealplans/generate>
+        // obtains - id, title, imageType, imageUrls
+        for(var i = 0; i < meals['items'].length; i++){
+            var curMeal = meals['items'][i];
+            curMeal = JSON.parse(curMeal.value);
+            recipeObject.id = curMeal.id;
+            recipeObject.title = curMeal.title;
+            // finalRecipes.push(recipeObject);
+        }
+        
+        for (var x = 0; x < finalRecipes.length; x++){
+            assignUrlsAndNutrients(finalRecipes[x]);
+        }
+
+    }
+}
 
 // Accepts a recipeObject that must contain at least the property id:number
 function assignUrlsAndNutrients(recipeObject){
+    console.log("Request for: " + JSON.stringify(recipeObject));
     var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
         + recipeObject.id
         + "/information";
@@ -125,57 +130,94 @@ function assignUrlsAndNutrients(recipeObject){
     req.setRequestHeader("X-Mashape-Key", key);
     
     req.addEventListener('load', function(){
-        var reqCount = 0;
-        var failure = 0;
-        /**
-         * Do something here with the req.responseText
-         */
-         if (req.status >= 500){
-            //Ensure only 8 requests are made at most
-            if(++reqCount >= 8) {
-                failure = 1;
-                console.log("assignUrl: Unable to get recipe urls and nutrients from meal id.\n");
-                return;
-            }
-            req.open("GET", reqQuery , true);
-            req.setRequestHeader("X-Mashape-Key", key);
-            req.send();
-         } else {
-          
-            var response = JSON.parse(req.responseText);
-            // parse response here
-            recipeObject.sourceUrl = response.sourceUrl;
-            recipeObject.servings = response.servings;
-            recipeObject.extendedIngredients = response.extendedIngredients;
-            recipeObject.readyInMinutes = response.readyInMinutes;
-            recipeObject.imageUrl = response.image;
-         }
+        assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject);
     });
+    req.send();
 }
 
-
-/* IMPLEMENT */
-// 3. GET Extract Recipe From Website <recipes/extract> 
-//    obtains - servings, extendedIngredients, readyInMinutes, text, instructions
-function assignRecipeInstructions(recipeObject){}
-
-
-function createRecipes(){
-    // call all the ajax functions in series
-    getWeeklyMeals();
-    for (var x = 0; x < finalRecipes.length; ++x){
-        assignUrlsAndNutrients(finalRecipes[x]);
-        assignRecipeInstructions(finalRecipes[x]);
+function assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject){
+    var reqCount = 0;
+    var failure = 0;
+    /**
+    * Do something here with the req.responseText
+    */
+    if (req.status >= 500){
+        //Ensure only 8 requests are made at most
+        if(++reqCount >= 8) {
+            failure = 1;
+            console.log("assignUrl: Unable to get recipe urls and nutrients from meal id.\n");
+            return;
+        }
+        req.open("GET", reqQuery , true);
+        req.setRequestHeader("X-Mashape-Key", key);
+        req.send();
+    } else {
+    
+        var response = JSON.parse(req.responseText);
+        // parse response here
+        recipeObject.sourceUrl = response.sourceUrl;
+        recipeObject.servings = response.servings;
+        recipeObject.extendedIngredients = response.extendedIngredients;
+        recipeObject.readyInMinutes = response.readyInMinutes;
+        recipeObject.imageUrl = response.image;
+        assignRecipeInstructions(recipeObject);
     }
 }
 
-function createMealDivs(){
-    var newDiv = document.createElement("div");
-    newDiv.id = "content";
-    // create more html here based on finalRecipes[]
-    // Ben: for JQuery mobile css, some edits needed here
-    //newDiv.innerHTML = JSON.stringify(curMeal);
-    //content.appendChild(newDiv);
+// 3. GET Extract Recipe From Website <recipes/extract> 
+//    obtains - servings, extendedIngredients, readyInMinutes, text, instructions
+function assignRecipeInstructions(recipeObject){
+    var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/extract?"
+        + "forceExtraction=false&"
+        + "url=" + recipeObject.sourceUrl;
+        
+    var req = new XMLHttpRequest();
+    
+    req.open("GET", reqQuery, true);
+    req.setRequestHeader("X-Mashape-Key", key);
+    
+    req.addEventListener('load', function(){
+        assignRecipeInstRequestCallback(req, reqQuery, recipeObject);
+    });
+    
+    req.send();
 }
 
-createRecipes();
+function assignRecipeInstRequestCallback(req, reqQuery, recipeObject) {
+        var reqCount = 0;
+
+        if (req.status >= 500){
+        //Ensure only 8 requests are made at most
+        if(++reqCount >= 8) {
+            console.log("assignRecipeInstructions: Unable to get recipe id =" + recipeObject.id + ".\n");
+            return;
+        }
+            req.open("GET", reqQuery , true);
+            req.setRequestHeader("X-Mashape-Key", key);
+            req.send();
+        } else {
+        
+            var response = JSON.parse(req.responseText);
+            // parse response here
+            recipeObject.servings = response.servings;
+            recipeObject.extendedIngredients = response.extendedIngredients;
+            recipeObject.readyInMinutes = response.readyInMinutes;
+            recipeObject.text = response.text;
+            recipeObject.instructions = response.instructions;
+            finalRecipes.push(recipeObject);
+            createMealDivs(recipeObject);
+        }
+}
+
+console.log(finalRecipes);
+/* Needed - Persist finalRecipes in Java */
+
+function createMealDivs(recipeObject){
+    /* Needed - better way to display results */
+    var newDiv = document.createElement("div");
+    newDiv.textContent = JSON.stringify(recipeObject);
+    
+    document.getElementById("content").appendChild(newDiv);
+}
+
+getWeeklyMeals();

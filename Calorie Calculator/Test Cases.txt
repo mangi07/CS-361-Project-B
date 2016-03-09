@@ -1,0 +1,36 @@
+Calorie Calculator Test Cases
+
+1) Do the inputs retrieved generate the expected TDEE based on a formula?
+    Example Cases:
+        General:
+        a) Male, Age: 30, Height: 5ft, 10in, Weight: 190 lbs, Activity Level: Middle
+        
+        Zero Age:
+        b) Male, Age: 0, Height: 5ft, 10in, Weight: 190 lbs, Activity Level: Middle
+        
+        Zero Height:
+        c) Male, Age: 30, Height: 0, Weight: 190 lbs, Activity Level: Middle
+        
+        Zero Weight:
+        d) Male, Age: 30, Height: 5ft, 10in, Weight: 0, Activity Level: Middle
+        
+        General(female):
+        e) Female, Age: 30, Height: 5ft, 10in, Weight: 190 lbs, Activity Level: Middle
+        
+        General(low activity):
+        f) Male, Age: 30, Height: 5ft, 10in, Weight: 190 lbs, Activity Level: Low
+        
+        General(high activity):
+        g) Male, Age: 30, Height: 5ft, 10in, Weight: 190 lbs, Activity Level: Extreme
+        
+        Anomaly Cases (negative age input):
+        h) Male, Age: -30, Height: 5ft, 10in, Weight: 190 lbs, Activity Level: Middle
+        
+        Anomaly Case (negative height):
+        i) Male, Age: 30, Height: -5ft, -10in, Weight: 190 lbs, Activity Level: Middle
+        
+        Anomaly Case (negative weight):
+        j) Male, Age: 30, Height: 5ft, 10in, Weight: -190 lbs, Activity Level: Middle
+        
+        Anomaly Case (empty string input):
+        k) Male, Age: , Height: , Weight: , Activity Level: Middle

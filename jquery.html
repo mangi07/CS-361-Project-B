@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Include meta tag to ensure proper rendering and touch zooming -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="utf-8">
+	
+  <!-- Include jQuery Mobile stylesheets -->
+  <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="css/themes/food.min.css" />
+  <!--<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />-->
+  <!-- Include the jQuery library -->
+  <script src="css/jquery-1.12.1.min.js"></script>
+	<script>
+    $(document).bind('mobileinit',function(){
+        $.mobile.changePage.defaults.changeHash = false;
+        $.mobile.hashListeningEnabled = false;
+        $.mobile.pushStateEnabled = false;
+    });
+	</script>
+	<!-- Include the jQuery mobile library -->
+  <script src="css/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+
+<div data-role="page" data-theme="a" id="pageone">
+  <div data-role="header">
+    <h1>Insert Page Title Here</h1>
+  </div>
+
+  <div data-role="main" class="ui-content">
+    <p data-role="content">Insert Content Here</p>
+		<div data-role="content" class="ui-btn ui-corner-all">testing css</div>
+  </div>
+
+  <div data-role="footer">
+    <h1>Insert Footer Text Here</h1>
+  </div>
+</div> 
+
+</body>
+</html>
