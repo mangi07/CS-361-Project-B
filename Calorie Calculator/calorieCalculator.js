@@ -70,6 +70,7 @@ function getInches(){
 }
 
 // calculate the TDEE
+/* Pre-Conditions: userInfo.bmr and userInfo.activityFactor set to integers */
 function calculateTDEE(userInfo) {
     var tdee;
 

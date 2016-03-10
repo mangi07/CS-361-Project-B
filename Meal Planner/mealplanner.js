@@ -36,16 +36,30 @@ var getQueryString = function ( field, url ) {
 
 
 /* Spoonacular API Documentation at:
-     https://market.mashape.com/spoonacular/recipe-food-nutrition#find-by-nutrients */
-/* https://spoonacular-recipe-food-nutrition-v1.p.mashape.com */
-/*
-   Production Key: bOmaZvaeU8mshuqpe8f0WkZqUCGMp1mxhsnjsnDvVjriaCBS6D 
-   Testing Key: DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1
+    https://market.mashape.com/spoonacular/recipe-food-nutrition#find-by-nutrients
+    https://spoonacular-recipe-food-nutrition-v1.p.mashape.com
+
+    Production Key: bOmaZvaeU8mshuqpe8f0WkZqUCGMp1mxhsnjsnDvVjriaCBS6D 
+    Testing Key: DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1
 */
 var user = "ben2016"; // not used
 var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
+var failure = 0;
 
-
+/* This function initiates a chain of function calls as follows:
+    getWeeklyMealsRequestCallback,
+    assignUrlsAndNutrients,
+    assignUrlsAndNutRequestCallback,
+    assignRecipeInstructions,
+    assignRecipeInstRequestCallback
+    
+    adding properties to a given recipeObject on each RequestCallback.
+    Upon completion of this chain of function calls,
+    if no particular request was attempted more than 7 times,
+    each of the 21 recipeObjects should contain the following 9 properties:
+        id, title, sourceUrl, servings, extendedIngredients, readyInMinutes, imageUrl, 
+        text, and instructions
+*/
 function getWeeklyMeals() {
     var req = new XMLHttpRequest();
     var reqData = {};
@@ -65,15 +79,6 @@ function getWeeklyMeals() {
     reqQuery += "targetCalories=" + reqData['targetCalories'];
     reqQuery += "&timeFrame=" + reqData['timeFrame'];
     
-    /*
-    for(var i = 0; i < reqDataKeys.length; i++){
-        reqQuery += reqDataKeys[i] + "=" + reqData[reqDataKeys[i]];
-        if(i != reqData.length-1 ){
-            reqQuery += "&";
-        }
-    }
-    */
-    
     //Open and send query
     req.open("GET", reqQuery , true);
     req.setRequestHeader("X-Mashape-Key", key);
@@ -84,6 +89,9 @@ function getWeeklyMeals() {
 
 }
 
+/* Upon succesful response, 
+    adds 21 recipeObjects to the finalRecipes array,
+    each recipeObject containing an id and title*/
 function getWeeklyMealsRequestCallback(req, reqQuery){
     var reqCount = 0;
     
@@ -93,6 +101,7 @@ function getWeeklyMealsRequestCallback(req, reqQuery){
         if(++reqCount >= 8)
         {
             console.log("Sorry, we couldn't get a meal plan.\n");
+            failure = 1;
             return;
         }
         req.open("GET", reqQuery , true);
@@ -102,13 +111,13 @@ function getWeeklyMealsRequestCallback(req, reqQuery){
         var meals = JSON.parse(req.responseText);
 
         // 1. GET Compute Daily Meal Plan <recipes/mealplans/generate>
-        // obtains - id, title, imageType, imageUrls
+        // obtains - id, title
         for(var i = 0; i < meals['items'].length; i++){
             var curMeal = meals['items'][i];
             curMeal = JSON.parse(curMeal.value);
             recipeObject.id = curMeal.id;
             recipeObject.title = curMeal.title;
-            // finalRecipes.push(recipeObject);
+            finalRecipes.push(recipeObject);
         }
         
         for (var x = 0; x < finalRecipes.length; x++){
@@ -118,7 +127,7 @@ function getWeeklyMealsRequestCallback(req, reqQuery){
     }
 }
 
-// Accepts a recipeObject that must contain at least the property id:number
+/* Accepts a recipeObject that must contain at least the property id:number */
 function assignUrlsAndNutrients(recipeObject){
     console.log("Request for: " + JSON.stringify(recipeObject));
     var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
@@ -135,9 +144,21 @@ function assignUrlsAndNutrients(recipeObject){
     req.send();
 }
 
+/*
+    Pre-Conditions:
+        (1) req is an XMLHttpRequest object,
+        (2) reqQuery is of the form 
+        "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/<id>/information"
+        (3) valid key/value pair "X-Mashape-Key" in req Header is set
+        (4) recipeObject contains two properties: id and title
+    Post-Conditions:
+        (1) Upon succesful response, each recipeObject should contain the following properties:
+        id, title, sourceUrl, servings, extendedIngredients, readyInMinutes, imageUrl
+    Note: This function is responsible for obtaining the last five properties in this list.
+*/
 function assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject){
     var reqCount = 0;
-    var failure = 0;
+    failure = 0;
     /**
     * Do something here with the req.responseText
     */
@@ -152,7 +173,6 @@ function assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject){
         req.setRequestHeader("X-Mashape-Key", key);
         req.send();
     } else {
-    
         var response = JSON.parse(req.responseText);
         // parse response here
         recipeObject.sourceUrl = response.sourceUrl;
@@ -164,11 +184,19 @@ function assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject){
     }
 }
 
-// 3. GET Extract Recipe From Website <recipes/extract> 
-//    obtains - servings, extendedIngredients, readyInMinutes, text, instructions
+/*
+    Pre-Conditions:
+        (1) recipeObject.sourceUrl is a valid url
+    Post-Conditions:
+        (1) Upon succesful response, each recipeObject should contain the following properties:
+            id, title, sourceUrl, servings, extendedIngredients, readyInMinutes, imageUrl, 
+            text, and instructions
+        OR global failure = 1 (through the callback)
+    Note: This function is responsible for obtaining the last two properties in this list.
+*/
 function assignRecipeInstructions(recipeObject){
     var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/extract?"
-        + "forceExtraction=false&"
+        /*+ "forceExtraction=false&"*/
         + "url=" + recipeObject.sourceUrl;
         
     var req = new XMLHttpRequest();
@@ -183,12 +211,27 @@ function assignRecipeInstructions(recipeObject){
     req.send();
 }
 
+/*
+    Pre-Conditions:
+        (1) req is a valid XMLHttpRequest object
+        (2) reqQuery is of the following form:
+            "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/extract?<url>"
+        (3) recipeObject.sourceUrl is a valid url
+    Post-Conditions:
+        (1) Upon succesful response, each recipeObject should contain the following properties:
+            id, title, sourceUrl, servings, extendedIngredients, readyInMinutes, imageUrl, 
+            text, and instructions
+        OR global failure = 1
+    Note: This function is responsible for obtaining the last two properties in this list.
+*/
 function assignRecipeInstRequestCallback(req, reqQuery, recipeObject) {
         var reqCount = 0;
+        failure = 0;
 
         if (req.status >= 500){
         //Ensure only 8 requests are made at most
         if(++reqCount >= 8) {
+            failure = 1;
             console.log("assignRecipeInstructions: Unable to get recipe id =" + recipeObject.id + ".\n");
             return;
         }
@@ -196,21 +239,16 @@ function assignRecipeInstRequestCallback(req, reqQuery, recipeObject) {
             req.setRequestHeader("X-Mashape-Key", key);
             req.send();
         } else {
-        
             var response = JSON.parse(req.responseText);
             // parse response here
-            recipeObject.servings = response.servings;
-            recipeObject.extendedIngredients = response.extendedIngredients;
-            recipeObject.readyInMinutes = response.readyInMinutes;
+            //recipeObject.servings = response.servings;
+            //recipeObject.extendedIngredients = response.extendedIngredients;
+            //recipeObject.readyInMinutes = response.readyInMinutes;
             recipeObject.text = response.text;
             recipeObject.instructions = response.instructions;
-            finalRecipes.push(recipeObject);
             createMealDivs(recipeObject);
         }
 }
-
-console.log(finalRecipes);
-/* Needed - Persist finalRecipes in Java */
 
 function createMealDivs(recipeObject){
     /* Needed - better way to display results */
@@ -221,3 +259,7 @@ function createMealDivs(recipeObject){
 }
 
 getWeeklyMeals();
+
+console.log("finalRecipes: " + finalRecipes);
+
+/* Needed - Persist finalRecipes in Java */

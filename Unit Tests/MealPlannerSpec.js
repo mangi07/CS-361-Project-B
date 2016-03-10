@@ -1,40 +1,11 @@
-describe("User", function() {
-  var user;
-
-  beforeEach(function() {
-    user = new userInfo("female", 26, 165.1, 65.7709, "75");
-  });
-
-  it("should be able to change fields", function() {
-    user.gender = "male";
-		user.age = 30;
-		user.height = 170.1;
-		user.weight = 72;
-		user.activityFactor = "50";
-		
-    expect(user.gender).toEqual("male");
-		expect(user.age).toEqual(30);
-		expect(user.height).toEqual(170.1);
-		expect(user.weight).toEqual(72);
-		expect(user.activityFactor).toEqual("50");
-
-  });
-	
-	it("should have a BRM of ~1594.87 as female, 26 yrs, 165.1 cm, 65.7709 lbs, and Very active (75) lifestyle", function() {
-    var bmr = calculateBMR(user);
-		
-		expect(bmr).toBeGreaterThan(1594.87);
-		expect(bmr).toBeLessThan(1594.88);
-
-  });
+describe("", function(){
+  it("", function(){});
   
-  // Ben: tests for calculateTDEE needed
   
-  // Ben: tests for mealplanner.js needed in separate file
+});
+  // Ben: tests for mealplanner.js needed
   //   as described here: https://piazza.com/class/iir5jzwlu5d3ph?cid=378
-  //   and add link to SpecRunner.html
-  
-  
+
 /*
   describe("when song has been paused", function() {
     beforeEach(function() {
@@ -76,8 +47,4 @@ describe("User", function() {
       }).toThrowError("song is already playing");
     });
   });     */
-  
-  
-  
-  
-});
+
