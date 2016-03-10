@@ -3,6 +3,19 @@ describe("", function(){
   
   
 });
+
+describe("Get 21 meals", function(){
+  it("will add 21 reciple objects to the finalRecipes array, based off our requested values", function(){
+    
+    
+    
+    
+  });
+  
+  
+});
+
+
   // Ben: tests for mealplanner.js needed
   //   as described here: https://piazza.com/class/iir5jzwlu5d3ph?cid=378
 
@@ -48,3 +61,24 @@ describe("", function(){
     });
   });     */
 
+
+// fiddling with it
+
+/*
+// string = name or title for a spec suite, usually what is under test
+ function = block of code that implements the suite
+ 
+ spec 
+describe("string", function() {
+
+describe("Hello world", function() {
+  it("says hello", function() {
+    expect(helloWorld()).toEqual("Hello world!");
+  });
+
+});
+
+
+});
+
+*/
