@@ -145,18 +145,25 @@ function createMealDivs(recipeObject){
     /* Needed - better way to display results */
     var newDiv = document.createElement("div");
     newDiv.id = "content";
-    newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + JSON.stringify(recipeObject) + "</a>";
-    //Append title to div
-    //var rtitle=document.createElement("H4");
-    //var text=document.createTextNode(recipeObject.title);
-    //rtitle.appendChild(text);
-    //newDiv.appendChild(rtitle);
-    //Append table with list of ingredients to div?
+    var meal;
+    if(recipeObject.slot==1)
+    {
+        meal="Breakfast";
+    }    
+    else if (recipeObject.slot==2)
+    {
+        meal="Lunch";
+    }
+    else if (recipeObject.slot==3)
+    {
+        meal="Dinner";
+    }
     
+    var recipeTitle="Day"+recipeObject.day+" "+meal+ ":"+recipeObject.title;
+    console.log(recipeTitle);
     
-    //Append table with list of instructions to div?
-    
-    //newDiv.textContent = JSON.stringify(recipeObject);
+    //newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + JSON.stringify(recipeObject) + "</a>";
+    newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + recipeTitle + "</a>";
     
     document.getElementById("content").appendChild(newDiv);
 }
@@ -166,3 +173,4 @@ getWeeklyMeals();
 console.log("finalRecipes: " + finalRecipes);
 
 /* Needed - Persist finalRecipes in Java */
+

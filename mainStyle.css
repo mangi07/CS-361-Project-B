@@ -59,6 +59,12 @@ legend{
     font-weight: bold;
 }
 
+ul
+{
+    list-style-type: none;
+    
+}
+
 #content {
     display: inline-block;
     font-family: Verdana, Arial, sans-serif;

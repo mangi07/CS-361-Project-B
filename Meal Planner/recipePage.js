@@ -151,12 +151,44 @@ function assignRecipeInstRequestCallback(req, reqQuery, recipeObject) {
 }
 
 function createMealDivs(recipeObject){
-    /* Needed - better way to display results */
     var header = document.getElementById("header").children[0];
     header.textContent += decodeURIComponent(recipeObject.title);
     var newDiv = document.createElement("div");
     newDiv.id = "content";
-    newDiv.textContent = JSON.stringify(recipeObject);
+    //Uncomment this line to display the complete recipeObject.
+    //newDiv.textContent = JSON.stringify(recipeObject);
+    
+    //Header Ingredient Section
+    var ititle=document.createElement("H1");
+    var text1=document.createTextNode("Ingredients:");
+    ititle.appendChild(text1);
+    newDiv.appendChild(ititle);
+    
+    //Create List Object
+    var ingredients=document.createElement("OL");
+    //List the recipe ingredients:
+    for(var i=0;i<recipeObject.extendedIngredients.length;i++)
+    {
+        var ol =document.createElement("ol");
+        var text=document.createTextNode(recipeObject.extendedIngredients[i].originalString+"\n");
+        ol.appendChild(text);
+        newDiv.appendChild(ol);
+    }
+    //Append list object to div object
+    newDiv.appendChild(ingredients);
+    
+    //Header Ingredient Section
+    var htitle=document.createElement("H1");
+    var text2=document.createTextNode("Instructions:");
+    htitle.appendChild(text2);
+    newDiv.appendChild(htitle);
+    
+    //List the recipe instructions
+    var ol2=document.createElement("ol");
+    var instructions=document.createTextNode(recipeObject.text);
+    ol2.appendChild(instructions);
+    newDiv.appendChild(ol2);
+    
     //Display recipe image
     var img=document.createElement("IMG");
     img.src=recipeObject.imageUrl;
