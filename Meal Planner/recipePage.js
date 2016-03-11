@@ -183,16 +183,33 @@ function createMealDivs(recipeObject){
     htitle.appendChild(text2);
     newDiv.appendChild(htitle);
     
+    
     //List the recipe instructions
     var ol2=document.createElement("ol");
     var instructions=document.createTextNode(recipeObject.text);
     ol2.appendChild(instructions);
     newDiv.appendChild(ol2);
     
+
     //Display recipe image
     var img=document.createElement("IMG");
     img.src=recipeObject.imageUrl;
     newDiv.appendChild(img);
+    
+    //Create link to ga back to main meal plan page
+    
+    var ltitle=document.createElement("H3");
+    var text3=document.createTextNode("");
+    ltitle.appendChild(text3);
+    newDiv.appendChild(ltitle);
+   
+    var blink =document.createElement("a");
+    var ltext=document.createTextNode("Back to Meal Plan");
+    blink.appendChild(ltext);
+    blink.href="mealplanner.html";
+    newDiv.appendChild(blink);
+    
+    
     
     document.getElementById("content").appendChild(newDiv);
 }

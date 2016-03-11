@@ -174,3 +174,14 @@ console.log("finalRecipes: " + finalRecipes);
 
 /* Needed - Persist finalRecipes in Java */
 
+/* potential options:
+ sqlite (database)
+ localStorage (stored as a string with a keyvalue)
+      here is an example of it working https://jsfiddle.net/4sof033n/1/
+        negatives: stores the data as a giant string so we have to recreate the
+        object if  we want to use it
+            - only stores the first 21 recipes on the first call, so we have to make
+                sure to check if data is stored before doing anything else
+        pros: dont have to learn new things
+      
+      */
