@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meal Plan</title>
+        <link rel="stylesheet" type="text/CSS" href="../mainStyle.css">
+    </head>
+    
+    <!-- Ben: add attributes and classes for jQuery mobile css -->
+    <body data-role="content" data-theme="a">
+        <span id="header">
+            <center>
+                Meal Plan
+            </center>
+        </span>
+        <p id="tdeeLabel">Total Daily Energy Expenditure: 
+        <span id="tdee">Unknown</span>
+        </p>
+        
+        <center><div id="content"></div></center>
+        
+        <center><a href="../index.html" id="navigation" class="ui-btn ui-corner-all">
+            Back to Main Page
+        </a></center>
+
+        <script src="../javaPersistence.js"></script>
+        <script src="mealplanner.js"></script>
+        <script>$("a").attr('data-ajax', false);</script>
+    </body>
+</html>

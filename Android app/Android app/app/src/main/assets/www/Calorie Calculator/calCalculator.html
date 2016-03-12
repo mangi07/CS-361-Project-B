@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Calorie Calculator</title>
+        <link rel="stylesheet" type="text/CSS" href="../mainStyle.css">
+    </head>
+    <body>
+        
+        <!-- Ben: add attributes and classes for jQuery mobile css 
+            and provide link back to a main in29dex file (to be created)
+        -->
+        
+        <span id="header">
+        <h2>
+            <center>
+                Calorie Counter
+            </center>
+        </h2>
+        </span>
+        
+        <center>
+        <div id="form">
+        <form action="../Meal Planner/mealplanner.html" method="GET" id="userInfo">
+            <fieldset>
+                <legend>Gender</legend>
+                <select id="gender" name="gender">
+                    <option id="maleInput">Male</option>
+                    <option id="femaleInput">Female</option>
+                </select>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Age</legend>
+                <input type="number" name="age" id="ageInput" value=30>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Height & Weight</legend>
+
+                <input type="number" name="heightFeet" id="heightFeetInput" value=5>
+                <label for="heightFeetInput">ft</label>
+                <input type="number" name="heightInches" id="heightInchesInput" value=9>
+                <label for="heightInchesInput">in</label>
+
+                <br><br>
+                
+                <input type="number" name="weight" id="weightInput" value=155>
+                <label for="weightInput">lbs</label>
+            </fieldset>
+            
+            <fieldset>
+                <legend>Activity Factor</legend>
+                <div id="activityFactorWrapper">
+                    <label for="activityFactor">Sedentary</label>
+                    <input type="range" min=0 max=100 step=25 id="activityFactor">
+                    <label for="activityFactor">Extreme!</label>
+                </div>
+            </fieldset>
+            
+            <br>
+            <center>
+                <input type="submit" id="submitButton">
+            </center>
+        </form>
+        </div>
+        
+        <div>Answer:</div>
+        <div id="bmrAnswer"></div>
+        </center>
+        
+        <center><a href="../index.html" id="navigation">Back to Main Page</a></center>
+        
+        <script src="calorieCalculator.js"></script>
+    </body>
+</html>

@@ -1,0 +1,78 @@
+body {
+    background-color: #ffcb83;
+}
+
+#header {
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+#header center{
+    font-family: Verdana, Arial, sans-serif;
+    font-weight: bold;
+    padding-top: 30px;
+    width: 100%;
+    height: 55px;
+    background-color: #ff9400;
+    border: 2px solid #e98700;
+}
+
+#form {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+    max-width: 320px;
+    padding: 20px;
+    border: 2px solid #e98700;
+    background-color: #ff9400;
+}
+
+#form fieldset {
+    display: inline-table;
+    margin:0px;
+    background-color: #ffa72f;
+    text-align: center;
+    vertical-align: top;
+    min-height: 90px;
+}
+
+#form input {
+    display: inline-block;
+    width: 35px;
+    
+}
+
+#form #activityFactorWrapper {
+    line-height: 540%;
+}
+#form #activityFactor {
+    width: 45%;
+}
+
+#form #submitButton {
+    width: auto;
+}
+
+legend{
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+}
+
+ul
+{
+    list-style-type: none;
+    
+}
+
+#content {
+    display: inline-block;
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 14px;
+    min-width: 500px;
+    width: 90%;
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #e98700;
+    background-color: #ff9400;
+}
