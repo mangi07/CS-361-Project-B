@@ -20,11 +20,38 @@ function userInfo(gender, age, height, weight, activityFactor) {
 
 // function to capture user info from the DOM and put it into a user info object
 function captureUserInfo(){
-    var weight = document.getElementById("weightInput").value;
-    var height = getInches();
+
     var age = document.getElementById("ageInput").value;
+    if(age < 18){
+        alert("Error: Meal planning not intended for users under 18 years of age.");
+        return;
+    }
+
+    var height = getInches();
+    if (height <= 0 || isNaN(height)){
+        alert("Error: Invalid height entered. Must be greater than or equal to zero.");
+        return;
+    }
+    
+
+    var weight = document.getElementById("weightInput").value;
+    if(weight <= 0){
+        alert("Error: Invalid weight entered. Must be greater than or equal to zero.");
+        return;
+    }
+
     var gender = document.getElementById("gender").value;
+    if(!gender){
+        alert("Error: Couldn't retrieve gender information. Please try again.");
+        return;
+    }
+    
     var activityFactor = document.getElementById("activityFactor").value;
+    if(activityFactor < 0 || activityFactor > 100){
+        alert("Error: Couldn't retrieve accurate activityFactor information. Please try again.");
+        return;
+    }
+    
     var userObject = new userInfo(gender, age, height, weight, activityFactor);
     return userObject;
 }

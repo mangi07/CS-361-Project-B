@@ -1,7 +1,7 @@
 
-// Ben: need to bind ajax response to Java function that persists meal plans
-//  and add ui capability somewhere to load meal plans through a second Java function
-
+/* javaPersistence.js must be loaded before this file
+to include the functions:
+javaLoadData and javaHasData */
 
 /* This JSON object will ultimately contain all the information for each recipe
 returned by the initial recipes/mealplans/generate call. These will be appended
@@ -41,6 +41,7 @@ var getQueryString = function ( field, url ) {
     Testing Key: DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1
 */
 var user = "ben2016"; // not used
+var userObject = {};
 var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
 var failure = 0;
 
@@ -68,12 +69,17 @@ function getWeeklyMeals() {
     // Ben: swap comments on reqData['targetCalories'] assignment 
     //   to deal with GET request from calorieCalculator.js
     
-    //reqData['targetCalories'] = getQueryString('tdee');
-    reqData['targetCalories'] = 2000;
-    reqData['timeFrame'] = "week";
+    reqData['targetCalories'] = getQueryString('tdee');
     
-    var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/mealplans/generate?"
-    //var reqDataKeys = Object.keys(reqData);
+    if(parseInt(reqData['targetCalories']) < 1200 || isNaN(reqData['targetCalories'])){
+        alert("Error: Unhealthy calorie intake indicated. Intake set to 1200 calories.");
+        reqData['targetCalories'] = 1200;
+    } 
+
+    reqData['timeFrame'] = "week";
+    document.getElementById('tdee').innerHTML = reqData['targetCalories'];
+    
+    var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/mealplans/generate?";
     reqQuery += "targetCalories=" + reqData['targetCalories'];
     reqQuery += "&timeFrame=" + reqData['timeFrame'];
     
@@ -84,6 +90,13 @@ function getWeeklyMeals() {
         getWeeklyMealsRequestCallback(req, reqQuery);
     });
     req.send();
+    
+    // add finalRecipes and tdee to userObject
+    userObject.tdee = reqData['targetCalories'];
+    userObject.finalRecipes = finalRecipes;
+    
+    // trigger native Java method to persist userObject as a JSON string
+    //   javaSaveData(JSON.stringify(userObject));
 
 }
 
@@ -142,7 +155,6 @@ function getWeeklyMealsRequestCallback(req, reqQuery){
 }
 
 function createMealDivs(recipeObject){
-    /* Needed - better way to display results */
     var newDiv = document.createElement("div");
     newDiv.id = "content";
     var meal;
@@ -160,17 +172,32 @@ function createMealDivs(recipeObject){
     }
     
     var recipeTitle="Day"+recipeObject.day+" "+meal+ ":"+recipeObject.title;
-    console.log(recipeTitle);
-    
+
     //newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + JSON.stringify(recipeObject) + "</a>";
     newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + recipeTitle + "</a>";
     
     document.getElementById("content").appendChild(newDiv);
 }
 
-getWeeklyMeals();
+// check if App has saved meals
+// if so...calls native Java method loadWeeklyMeals()
+if (javaHasData()) {
+    loadWeeklyMeals();
+} else {
+    getWeeklyMeals();
+}
 
-console.log("finalRecipes: " + finalRecipes);
+
+function loadWeeklyMeals() {
+    // test this out
+    userObject = JSON.parse(javaLoadData());
+    var recipes = userObject.finalRecipes;
+    for (var x = 0; x < recipes.length; x++){
+        createMealDivs(recipes[x]);
+    }
+};
+
+
 
 /* Needed - Persist finalRecipes in Java */
 

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Meal Planner Main Page</title>
+        <link rel="stylesheet" type="text/CSS" href="./mainStyle.css">
+    </head>
+    
+    <body>
+        <span id="header">
+            <center>
+                Meal Planner Main Page
+            </center>
+        </span>
+        
+        <center><a href="Calorie%20Calculator/calCalculator.html">Make a Weekly Meal Plan</a></center>
+
+        <script src="javaPersistence.js">
+            var mealPlanLink;
+            if (javaHasData()) {
+                mealPlanLink = document.createElement("a");
+                var linkText = document.createTextNode("To Saved Meal Plann");
+                mealPlanLink.appendChild(linkText);
+                mealPlanLink.href = "Meal%20Planner/mealplanner.html";
+            }
+        </script>
+    </body>
+</html>
