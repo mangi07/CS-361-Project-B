@@ -68,12 +68,75 @@ describe("Calorie Calculator", function() {
       it("with brm of 1594.87 and invalid activityFactor of 100.1 should cause tdee to be set to 0", function() {
         user.bmr = 1594.87;
         user.activityFactor = 101;
+        spyOn(window, 'alert').and.callFake(function(val){console.log(val);});
         var tdee = calculateTDEE(user);
         
         expect(tdee).toEqual(0);
       });
     });
-});
+    
+    describe("Capturing user info", function(){
+
+  it("should alert the user if they try to enter an age < 18", function(){
+    var ageInput = document.createElement("input");
+    ageInput.id = "ageInput";
+    ageInput.type = "number";
+    ageInput.value = 17.9;
+    document.body.appendChild(ageInput);
+    
+    spyOn(window, 'alert').and.callFake(function(){return 1;});
+    captureUserInfo();
+    expect(window.alert.calls.count()).toBe(1);
+  })
   
+  it("should alert the user if they try to enter a total height <= 0", function(){
+    document.getElementById("ageInput").value = 18;
+    
+    var heightFeetInput = document.createElement("input");
+    heightFeetInput.id = "heightFeetInput";
+    heightFeetInput.type = "number";
+    heightFeetInput.value = -1;
+
+    var heightInchesInput = document.createElement("input");
+    heightInchesInput.id = "heightInchesInput";
+    heightInchesInput.type = "number";
+    heightInchesInput.value = -1;
+    
+    document.body.appendChild(heightFeetInput);
+    document.body.appendChild(heightInchesInput);
+    
+    spyOn(window, 'alert').and.callFake(function(){return 1;});
+    captureUserInfo();
+    expect(window.alert.calls.count()).toBe(1);
+  })
+  
+  it("should alert the user if they try to enter a weight <= 0", function(){
+
+    document.getElementById("heightFeetInput").value = 6;
+    document.getElementById("heightInchesInput").value = 2;
+    
+    var weightInput = document.createElement("input");
+    weightInput.id = "weightInput";
+    weightInput.type = "number";
+    weightInput.value = -1;
+    
+    document.body.appendChild(weightInput);
+    
+    spyOn(window, 'alert').and.callFake(function(){return 1;});
+    captureUserInfo();
+    document.body.removeChild(document.getElementById("ageInput"));
+    document.body.removeChild(document.getElementById("heightFeetInput"));
+    document.body.removeChild(document.getElementById("heightInchesInput"));
+    document.body.removeChild(document.getElementById("weightInput"));
+    expect(window.alert.calls.count()).toBe(1);
+  })
+  
+
+});
+
+});
+
+
+
 
 

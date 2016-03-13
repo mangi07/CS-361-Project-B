@@ -19,8 +19,10 @@ var getQueryString = function ( field, url ) {
     Production Key: bOmaZvaeU8mshuqpe8f0WkZqUCGMp1mxhsnjsnDvVjriaCBS6D 
     Testing Key: DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1
 */
-var user = "ben2016"; // not used
-var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
+//Ben's Key
+//var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
+//Sean's Key
+var key = "tfLrZlE8BnmshZ63qgU2qsYtQ28Lp1QdIOHjsnwgplvCOGLesM";
 var failure = 0;
 
 
@@ -30,9 +32,11 @@ recipeObject.id = getQueryString("id");
 recipeObject.title = getQueryString("title");
 assignUrlsAndNutrients(recipeObject);
 
+var reqCount = 0;
 
 /* Accepts a recipeObject that must contain at least the property id:number */
 function assignUrlsAndNutrients(recipeObject){
+    reqCount = 0;
     console.log("Request for: " + JSON.stringify(recipeObject));
     var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
         + recipeObject.id
@@ -62,10 +66,10 @@ function assignUrlsAndNutrients(recipeObject){
     Note: This function is responsible for obtaining the last five properties in this list.
 */
 function assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject){
-    var reqCount = 0;
+
     failure = 0;
 
-    if (req.status >= 500){
+    if (req.status >= 400){
         //Ensure only 8 requests are made at most
         if(++reqCount >= 8) {
             failure = 1;
@@ -98,6 +102,7 @@ function assignUrlsAndNutRequestCallback(req, reqQuery, recipeObject){
     Note: This function is responsible for obtaining the last two properties in this list.
 */
 function assignRecipeInstructions(recipeObject){
+    reqCount = 0;
     var reqQuery = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/extract?"
         + "forceExtraction=false&"
         + "url=" + recipeObject.sourceUrl;
@@ -128,36 +133,34 @@ function assignRecipeInstructions(recipeObject){
     Note: This function is responsible for obtaining the last two properties in this list.
 */
 function assignRecipeInstRequestCallback(req, reqQuery, recipeObject) {
-        var reqCount = 0;
-        failure = 0;
 
-        if (req.status >= 500){
-        //Ensure only 8 requests are made at most
-        if(++reqCount >= 8) {
-            failure = 1;
-            console.log("assignRecipeInstructions: Unable to get recipe id =" + recipeObject.id + ".\n");
-            return;
-        }
-            req.open("GET", reqQuery , true);
-            req.setRequestHeader("X-Mashape-Key", key);
-            req.send();
-        } else {
-            var response = JSON.parse(req.responseText);
-            // parse response here
-            recipeObject.text = response.text;
-            recipeObject.instructions = response.instructions;
-            createMealDivs(recipeObject);
-        }
+    failure = 0;
+
+    if (req.status >= 400){
+    //Ensure only 8 requests are made at most
+    if(++reqCount >= 8) {
+        failure = 1;
+        console.log("assignRecipeInstructions: Unable to get recipe id =" + recipeObject.id + ".\n");
+        return;
+    }
+        req.open("GET", reqQuery , true);
+        req.setRequestHeader("X-Mashape-Key", key);
+        req.send();
+    } else {
+        var response = JSON.parse(req.responseText);
+        // parse response here
+        recipeObject.text = response.text;
+        recipeObject.instructions = response.instructions;
+        createRecipeDivs(recipeObject);
+    }
 }
 
-function createMealDivs(recipeObject){
+function createRecipeDivs(recipeObject){
     var header = document.getElementById("header").children[0];
     header.textContent += decodeURIComponent(recipeObject.title);
     var newDiv = document.createElement("div");
     newDiv.id = "content";
-    //Uncomment this line to display the complete recipeObject.
-    //newDiv.textContent = JSON.stringify(recipeObject);
-    
+
     //Header Ingredient Section
     var ititle=document.createElement("H1");
     var text1=document.createTextNode("Ingredients:");
@@ -208,8 +211,6 @@ function createMealDivs(recipeObject){
     blink.appendChild(ltext);
     blink.href="mealplanner.html";
     newDiv.appendChild(blink);
-    
-    
     
     document.getElementById("content").appendChild(newDiv);
 }

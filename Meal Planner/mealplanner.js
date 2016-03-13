@@ -40,10 +40,13 @@ var getQueryString = function ( field, url ) {
     Production Key: bOmaZvaeU8mshuqpe8f0WkZqUCGMp1mxhsnjsnDvVjriaCBS6D 
     Testing Key: DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1
 */
-var user = "ben2016"; // not used
 var userObject = {};
-var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
+//Ben's Key
+//var key = "DW9XSMsmJ9mshOb8Nu0OUsVY9ry7p1jwSaSjsnB20ChBTkFVg1";
+//Sean's Key
+var key = "tfLrZlE8BnmshZ63qgU2qsYtQ28Lp1QdIOHjsnwgplvCOGLesM";
 var failure = 0;
+var reqCount = 0;
 
 /* This function initiates a chain of function calls as follows:
     getWeeklyMealsRequestCallback,
@@ -88,12 +91,11 @@ function getWeeklyMeals() {
     req.setRequestHeader("X-Mashape-Key", key);
     req.addEventListener('load', function(){
         getWeeklyMealsRequestCallback(req, reqQuery);
+        // add finalRecipes and tdee to userObject
+        userObject.tdee = reqData['targetCalories'];
+        userObject.finalRecipes = finalRecipes;
     });
     req.send();
-    
-    // add finalRecipes and tdee to userObject
-    userObject.tdee = reqData['targetCalories'];
-    userObject.finalRecipes = finalRecipes;
     
     // trigger native Java method to persist userObject as a JSON string
     //   javaSaveData(JSON.stringify(userObject));
@@ -104,13 +106,10 @@ function getWeeklyMeals() {
     adds 21 recipeObjects to the finalRecipes array,
     each recipeObject containing an id and title*/
 function getWeeklyMealsRequestCallback(req, reqQuery){
-    var reqCount = 0;
-    
-    if (req.status >= 500)
-    {
+
+    if (req.status >= 400) {
         //Ensure only 8 requests are made at most
-        if(++reqCount >= 8)
-        {
+        if(++reqCount >= 8) {
             console.log("Sorry, we couldn't get a meal plan.\n");
             failure = 1;
             return;
@@ -158,23 +157,24 @@ function createMealDivs(recipeObject){
     var newDiv = document.createElement("div");
     newDiv.id = "content";
     var meal;
-    if(recipeObject.slot==1)
-    {
+    if(recipeObject.slot==1){
         meal="Breakfast";
     }    
-    else if (recipeObject.slot==2)
-    {
+    else if (recipeObject.slot==2){
         meal="Lunch";
     }
-    else if (recipeObject.slot==3)
-    {
+    else if (recipeObject.slot==3){
         meal="Dinner";
+    } else {
+        meal="ERROR ";
     }
     
-    var recipeTitle="Day"+recipeObject.day+" "+meal+ ":"+recipeObject.title;
-
-    //newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + JSON.stringify(recipeObject) + "</a>";
-    newDiv.innerHTML = "<a href=\"recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title + "\">" + recipeTitle + "</a>";
+    var recipeTitle="Day " + recipeObject.day + " " + meal +  ":" + recipeObject.title;
+    var newLink = document.createElement("a");
+    newLink.id = recipeObject.id;
+    newLink.href = "recipePage.html?id=" + recipeObject.id + "&title=" + recipeObject.title;
+    newLink.textContent = recipeTitle;
+    newDiv.appendChild(newLink);
     
     document.getElementById("content").appendChild(newDiv);
 }
