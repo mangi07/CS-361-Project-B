@@ -132,12 +132,12 @@ function assignRecipeInstRequestCallback(req, reqQuery, recipeObject) {
         failure = 0;
 
         if (req.status >= 500){
-        //Ensure only 8 requests are made at most
-        if(++reqCount >= 8) {
-            failure = 1;
-            console.log("assignRecipeInstructions: Unable to get recipe id =" + recipeObject.id + ".\n");
-            return;
-        }
+            //Ensure only 8 requests are made at most
+            if(++reqCount >= 8) {
+                failure = 1;
+                console.log("assignRecipeInstructions: Unable to get recipe id =" + recipeObject.id + ".\n");
+                return;
+            }
             req.open("GET", reqQuery , true);
             req.setRequestHeader("X-Mashape-Key", key);
             req.send();
