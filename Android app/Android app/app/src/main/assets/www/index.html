@@ -12,6 +12,7 @@
         <!--<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />-->
         <!-- Include the jQuery library -->
         <script src="css/jquery-1.12.1.min.js"></script>
+        <!-- From http://stackoverflow.com/questions/24081331/how-can-i-stop-jquery-mobile-using-hash-navigation-and-html5-history -->
         <script>
             $(document).bind('mobileinit',function(){
                 $.mobile.changePage.defaults.changeHash = false;
