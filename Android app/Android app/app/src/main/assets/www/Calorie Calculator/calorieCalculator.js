@@ -24,7 +24,7 @@ function captureUserInfo(){
     var age = document.getElementById("ageInput").value;
     if(age < 18){
         age = 18;
-        Android.showToast("Error: Meal planning not intended for users under 18 years of age.  Age set to 30.");
+        Android.showToast("Error: Meal planning not intended for users under 18 years of age.  Age set to 18.");
         //return;
     }
 
